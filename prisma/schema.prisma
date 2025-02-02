@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  fullName String
+  email    String    @unique
+  password String
+  role     UserRole  @default(USER)
+  verified DateTime?
+  workouts Workout[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Workout {
+  id          Int          @id @default(autoincrement())
+  title       String
+  color       String
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id])
+  days        WorkoutDay[]
+  exercises   Exercise[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("workouts")
+}
+
+model WorkoutDay {
+  id          Int       @id @default(autoincrement())
+  date        DateTime
+  workoutId   Int
+  workout     Workout   @relation(fields: [workoutId], references: [id])
+  exercises   Exercise[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("workout_days")
+}
+
+
+model Exercise {
+  id            Int         @id @default(autoincrement())
+  name          String
+  workoutId     Int
+  dayExercises  Int
+
+  workout       Workout     @relation(fields: [workoutId], references: [id])
+	dayExercise   WorkoutDay  @relation(fields: [dayExercises], references: [id])
+	setGroup      Sets[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("exercises")
+}
+
+model Sets {
+	id          Int        @id @default(autoincrement())
+	exerciseId  Int
+
+	exercise    Exercise   @relation(fields: [exerciseId], references: [id])
+	set         Set[]
+	triset      Triset[]
+
+	@@map("set_group")
+}
+
+model Set {
+  id           Int        @id @default(autoincrement())
+	type         String
+  setGroupId   Int
+
+  exercise     Sets   @relation(fields: [setGroupId], references: [id])
+
+  weight       Float?
+  reps         Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sets")
+}
+
+model Triset {
+  id           Int        @id @default(autoincrement())
+	type         String
+  setGroupId   Int
+
+  exercise     Sets   @relation(fields: [setGroupId], references: [id])
+  subSets      SubSet[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("trisets")
+}
+
+model SubSet {
+  id       Int    @id @default(autoincrement())
+  trisetId Int
+  triset   Triset @relation(fields: [trisetId], references: [id])
+
+  weight   Float?
+  reps     Int?
+  order    Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sub_sets")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
