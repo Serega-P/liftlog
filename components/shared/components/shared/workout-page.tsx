@@ -1,5 +1,5 @@
 import { ExerciseList, } from "@/components/shared/components";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/shared/components/ui/popover";
 import { Menu, Edit, Trash } from "lucide-react";
 
 interface Props {

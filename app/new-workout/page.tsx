@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Button, Container, Input, Title } from "@/components/shared/components";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/shared/components/ui/popover";
 import { Plus, ChevronDown, Check, Trash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";

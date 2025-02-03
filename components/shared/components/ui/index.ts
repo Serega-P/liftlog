@@ -10,3 +10,5 @@ export {InputOTP} from './input-otp';
 export {Select} from './select';
 export {ScrollArea} from './scroll-area';
 export {Popover} from './popover';
+export {AlertDialog} from './alert-dialog';
+export {Skeleton} from './skeleton';

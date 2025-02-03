@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Базовая стилизация для react-calendar */
+.react-calendar {
+  @apply w-full bg-bgBase text-primary p-4 border-none;
+}
+
+.react-calendar__navigation {
+  @apply flex justify-between items-center mb-2 text-3xl;
+}
+
+.react-calendar__tile {
+  @apply flex justify-center items-center relative text-base transition duration-200 ease-in-out;
+}
+
+.react-calendar .react-calendar__tile--now{
+	background: none !important;
+  box-shadow: none !important;
+  @apply font-bold border-[1px] border-solid rounded-lg border-bgSoft;
+}
+.react-calendar__tile--now:hover {
+  @apply border-transparent;
+}
+
+.react-calendar__tile--active {
+  @apply bg-accentSoft font-bold;
+}
+/* Дни недели */
+.react-calendar__month-view__days__day {
+	background: none !important;
+  box-shadow: none !important;
+	@apply rounded-lg transition-all duration-200;
+}
+
+.react-calendar__month-view__days__day:hover {
+	@apply outline outline-2 outline-bgSoft;
+}
+abbr[title] {
+  @apply no-underline;
+}
+
+.react-calendar__month-view__weekdays {
+  @apply text-muted font-medium normal-case;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  @apply flex justify-center items-center py-1;
+}
+
+/* Выходные дни */
+.react-calendar__month-view__days__day--weekend {
+  @apply text-primary;
+}
+
+
+
+.react-calendar__navigation__label:hover, 
+.react-calendar__navigation__arrow:hover {
+	background: none !important;
+  box-shadow: none !important;
+	@apply text-muted;
+}
+
+.react-calendar__navigation__arrow:hover {
+	@apply text-primary outline outline-2 outline-bgSoft;
+}
+
+/* Заголовок месяца */
+.react-calendar__navigation__label {
+  @apply font-bold text-lg rounded-2xl;
+}
+
+.react-calendar__navigation__arrow {
+  @apply text-muted  h-12 w-12 text-center transition rounded-lg;
+}
+
+/* Ячейки с событиями */
+.react-calendar__tile-content {
+  @apply flex flex-col items-center gap-1 mt-1;
+}

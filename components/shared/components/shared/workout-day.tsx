@@ -20,6 +20,7 @@ export const WorkoutDay: React.FC<WorkoutDayProps> = ({ workout, className }) =>
 
   const { id, title, color, days } = workout;
 
+
   // Найти последнюю дату тренировки
   const lastWorkoutDate = days.length > 0 ? new Date(days[days.length - 1].date) : null;
   const daysAgo = lastWorkoutDate

@@ -1,13 +1,24 @@
 import React from "react";
-import { TriSet as TriSetType } from "@/app/types/workouts";
 import { Set } from "@/components/shared/components";
 
-export function TriSet({ triSet }: { triSet: TriSetType }) {
+export function TriSet({ triSet }: { triSet: { 
+  set1: { weight: number; reps: number };
+  set2: { weight: number; reps: number };
+  set3: { weight: number; reps: number };
+  subSets?: { weight: number; reps: number; order: number }[];
+} }) {
   return (
-      <div className="space-y-2">
-        <Set set={triSet.set1} />
-        <Set set={triSet.set2} />
-        <Set set={triSet.set3} />
-      </div>
+    <div className="space-y-4">
+      {/* Отображаем сабсеты для каждого сета в трисете */}
+      {triSet.subSets && triSet.subSets.length > 0 && (
+        <div className="space-y-2">
+          {triSet.subSets.map((subSet, index) => (
+            <div key={index}>
+              <Set set={subSet} />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

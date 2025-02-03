@@ -1,21 +1,34 @@
 import React from "react";
-import { ExerciseSet as SetType } from "@/app/types/workouts";
+import {Skeleton } from "@/components/shared/components";
 
-export function Set({ set }: { set: SetType }) {
+interface SetType {
+  id: number;
+  weight?: number | null;
+  reps?: number | null;
+}
+
+export function Set({ set }: { set?: SetType }) {
+  if (!set) {
+		return <Skeleton className="w-full h-8 mb-4"/>
+  }
+
   return (
     <div className="flex justify-start items-center border-b border-dashed border-customBorder">
+      {/* Блок веса */}
       <div className="flex items-center">
-        <p className="font-bold mr-2 text-2xl">{set.weight}</p>
-				<p className="font-bold">kg</p>
+        <p className="font-bold mr-2 text-2xl">{set?.weight ?? "—"}</p>
+        <p className="font-bold">kg</p>
       </div>
 
-			<div className="flex items-center">
+      {/* Разделитель */}
+      <div className="flex items-center">
         <p className="text-muted mx-8">x</p>
       </div>
 
+      {/* Блок повторений */}
       <div className="flex items-center">
-        <p className="font-bold mr-2 text-2xl">{set.reps}</p>
-				<p className="font-bold">Reps</p>
+        <p className="font-bold mr-2 text-2xl">{set?.reps ?? "—"}</p>
+        <p className="font-bold">Reps</p>
       </div>
     </div>
   );

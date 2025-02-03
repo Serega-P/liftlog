@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-bgPrimary text-primary text-base text-accentSoft border border-dashed border-accentSoft hover:bg-bgSurface", // Основной стиль
+        default: "bg-bgPrimary text-primary text-base text-accentSoft font-normal border border-dashed border-accentSoft hover:bg-bgSurface", // Основной стиль
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90", // Деструктивная кнопка
         outline:

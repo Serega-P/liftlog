@@ -1,10 +1,32 @@
 "use client";
 
 import React from "react";
-import { Exercise as ExerciseType } from "@/app/types/workouts";
 import { useRouter } from "next/navigation";
 import { Button, Set, TriSet, Title } from "@/components/shared/components";
 import { Dumbbell, Settings2 } from "lucide-react";
+
+// Интерфейсы для корректной типизации
+interface SetType {
+  id: number;
+  weight?: number;
+  reps?: number;
+}
+
+interface TriSetType {
+  id: number;
+  subSets?: { id: number; weight: number; reps: number; order: number }[];
+}
+
+interface SetGroupType {
+  set?: SetType[];   // Могут быть сеты
+  triset?: TriSetType[]; // Могут быть трисеты
+}
+
+interface ExerciseType {
+  id: number;
+  name: string;
+  setGroup: SetGroupType[]; // Массив групп сетов или трисетов
+}
 
 export function Exercise({
   exercise,
@@ -30,25 +52,37 @@ export function Exercise({
 
       {/* Список сетов и трисетов */}
       <div className="px-12 pb-5">
-        {exercise.sequence.map((item, index) => {
-          if (item.type === "set") {
-            return (
-              <div key={index} className="py-2">
-                <span className="font-base pb-2 text-muted">Set</span>
-                <Set set={item.data} />
-              </div>
-            );
-          }
-          if (item.type === "triSet") {
-            return (
-              <div key={index} className="py-2">
-                <span className="font-base pb-2 text-muted">Tri-set</span>
-                <TriSet triSet={item.data} />
-              </div>
-            );
-          }
-          return null;
-        })}
+        {exercise.setGroup.length > 0 ? (
+          exercise.setGroup.map((group, index) => (
+            <div key={index} className="py-2">
+              {/* Отображение сетов */}
+              {group.set && group.set.length > 0 && (
+                <>
+                  {group.set.map((set) => (
+                    <div key={set.id} className="py-2">
+                      <span className="font-base pb-2 text-muted">Set</span>
+                      <Set set={set} />
+                    </div>
+                  ))}
+                </>
+              )}
+
+              {/* Отображение трисетов */}
+              {group.triset && group.triset.length > 0 && (
+                <>
+                  {group.triset.map((triSet) => (
+                    <div key={triSet.id} className="py-2">
+                      <span className="font-base pb-2 text-muted">Tri-set</span>
+                      <TriSet triSet={triSet} />
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-500">No exercises available for this workout.</div>
+        )}
 
         {/* Кнопка внизу */}
         <Button

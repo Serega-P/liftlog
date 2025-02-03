@@ -68,60 +68,7 @@
 
 	body {
     @apply text-primary bg-bgPrimary;
-		font-family: var(--font-nunito), sans-serif;
+		font-family: var(--font-rubik), sans-serif;
 
   }
-}
-
-/* Базовая стилизация для react-calendar */
-.react-calendar {
-  @apply w-full bg-bgBase text-primary p-4 border-none;
-}
-
-.react-calendar__navigation {
-  @apply flex justify-between items-center mb-2 text-3xl;
-}
-
-.react-calendar__tile {
-  @apply flex justify-center items-center relative text-base rounded-full w-12 h-12 transition duration-200 ease-in-out;
-}
-
-.react-calendar__tile--now {
-  @apply bg-bgBase text-accentSoft font-bold;
-}
-
-.react-calendar__tile--active {
-  @apply bg-accentSoft font-bold;
-}
-
-.react-calendar__tile:hover {
-  @apply bg-gray-200;
-}
-
-/* Дни недели */
-.react-calendar__month-view__weekdays {
-  @apply text-muted font-medium uppercase;
-}
-
-.react-calendar__month-view__weekdays__weekday {
-  @apply flex justify-center items-center py-1;
-}
-
-/* Выходные дни */
-.react-calendar__month-view__days__day--weekend {
-  @apply text-primary;
-}
-
-/* Заголовок месяца */
-.react-calendar__navigation__label {
-  @apply font-bold text-lg;
-}
-
-.react-calendar__navigation__arrow {
-  @apply text-muted hover:text-gray-700 transition;
-}
-
-/* Ячейки с событиями */
-.react-calendar__tile-content {
-  @apply flex flex-col items-center gap-1 mt-1;
 }

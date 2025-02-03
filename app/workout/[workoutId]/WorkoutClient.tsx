@@ -4,17 +4,36 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { Container, Title, Exercise } from "@/components/shared/components";
 import { MoreVertical, Calendar } from "lucide-react";
-import { Workout, Day } from "@/app/types/workouts";
+
+interface Exercise {
+  id: number;
+  name: string;
+  sets: number;
+  reps: number;
+}
+
+interface WorkoutDay {
+  id: number;
+  date: string;
+  exercises: Exercise[];
+}
+
+interface Workout {
+  id: number;
+  title: string;
+  color: string;
+  days: WorkoutDay[];
+	exercises?: { id: number; name: string }[];
+}
 
 interface WorkoutClientProps {
   workout: Workout;
-  day: Day;
+  workoutDay: WorkoutDay;
 }
 
-export default function WorkoutClient({ workout, day }: WorkoutClientProps) {
+export default function WorkoutClient({ workout, workoutDay }: WorkoutClientProps) {
   const router = useRouter();
-
-  const workoutDate = new Date(day.date);
+  const workoutDate = new Date(workoutDay.date);
 
   return (
     <Container className="w-full px-6 pt-20">
@@ -49,9 +68,9 @@ export default function WorkoutClient({ workout, day }: WorkoutClientProps) {
 
       {/* Секция упражнений */}
       <div>
-        {day.exercises.length > 0 ? (
-          day.exercises.map((exercise) => (
-            <Exercise key={exercise.id} exercise={exercise} workoutId={workout.id} />
+        {workoutDay.exercises.length > 0 ? (
+          workoutDay.exercises.map((exercise) => (
+            <Exercise key={exercise.id} exercise={exercise} sets={exercise.setGroup} workoutId={workout.id} />
           ))
         ) : (
           <p className="text-gray-500">No exercises available for this workout day.</p>
