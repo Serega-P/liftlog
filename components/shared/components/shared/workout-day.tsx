@@ -1,27 +1,22 @@
 import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { WorkoutType } from "@/app/types/types";
 
-interface WorkoutDayProps {
-  workout?: {
-    id: number;
-    title: string;
-    color: string;
-    days: { date: string }[];
-  };
-  className?: string;
+interface Props {
+  workout: WorkoutType;
+  onClick: () => void;
 }
 
-export const WorkoutDay: React.FC<WorkoutDayProps> = ({ workout, className }) => {
+export const WorkoutDay: React.FC<Props> = ({ workout, onClick }) => {
   if (!workout) {
     console.error("Workout is undefined.");
-    return null; // Не рендерим компонент, если workout не передан
+    return null;
   }
 
   const { id, title, color, days } = workout;
+	const lastDay = days.length - 1;
 
-
-  // Найти последнюю дату тренировки
   const lastWorkoutDate = days.length > 0 ? new Date(days[days.length - 1].date) : null;
   const daysAgo = lastWorkoutDate
     ? Math.floor((new Date().getTime() - lastWorkoutDate.getTime()) / (1000 * 60 * 60 * 24))
@@ -29,17 +24,15 @@ export const WorkoutDay: React.FC<WorkoutDayProps> = ({ workout, className }) =>
 
   return (
     <Link
-      href={`/workout/${id}`}
-      className={`flex items-center justify-between w-full bg-bgSurface py-5 px-8 rounded-[10px] mb-5 ${className}`}
+			href={`/workout/${id}/day/${lastDay}`}
+      onClick={onClick}
+      className="flex items-center justify-between w-full bg-bgSurface py-5 px-8 rounded-[10px] mb-5"
     >
-      {/* Левая часть: Точка, дата, заголовок */}
       <div className="flex flex-col space-y-0 flex-1 max-w-[80%]">
         <div className="flex items-center space-x-2">
           <div
             className="w-2.5 h-2.5 rounded-full mr-1"
-						style={{
-							backgroundColor: color, // HEX-значение
-						}}
+            style={{ backgroundColor: color }}
           ></div>
           <p className="text-sm text-muted">
             {daysAgo !== null ? (daysAgo === 0 ? "Today" : `${daysAgo} days ago`) : "No workouts yet"}
@@ -47,8 +40,6 @@ export const WorkoutDay: React.FC<WorkoutDayProps> = ({ workout, className }) =>
         </div>
         <h3 className="font-bold text-lg truncate">{title}</h3>
       </div>
-
-      {/* Правая часть: Стрелка */}
       <div className="flex-shrink-0">
         <ChevronRight strokeWidth={2} className="text-accent" />
       </div>

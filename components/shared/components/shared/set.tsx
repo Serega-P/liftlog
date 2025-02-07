@@ -2,7 +2,7 @@ import React from "react";
 import {Skeleton } from "@/components/shared/components";
 
 interface SetType {
-  id: number;
+  id?: number;
   weight?: number | null;
   reps?: number | null;
 }
@@ -11,6 +11,7 @@ export function Set({ set }: { set?: SetType }) {
   if (!set) {
 		return <Skeleton className="w-full h-8 mb-4"/>
   }
+
 
   return (
     <div className="flex justify-start items-center border-b border-dashed border-customBorder">

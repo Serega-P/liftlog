@@ -13,22 +13,12 @@ import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { WorkoutType, } from "@/app/types/types"
 
-interface WorkoutDay {
-  id: number;
-  date: string;
-}
-
-interface Workout {
-  id: number;
-  title: string;
-  color: string;
-  days: WorkoutDay[];
-}
 
 export default function Home() {
   const router = useRouter();
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [workouts, setWorkouts] = useState<WorkoutType[]>([]);
   // const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,8 +35,9 @@ export default function Home() {
       });
   }, []);
 
+
   const handleAddWorkout = () => {
-    router.push("/new-workout");
+    router.push("/workout/create");
   };
 
   const handleCalendarClick = (date: string) => {
@@ -118,22 +109,11 @@ export default function Home() {
 					</>
         ) : (
           sortedWorkouts.map((workout) => {
-            const date =
-              workout.daysAgo !== null
-                ? workout.daysAgo === 0
-                  ? "Today"
-                  : `${workout.daysAgo} day${workout.daysAgo > 1 ? "s" : ""} ago`
-                : "No workouts yet";
-
             return (
               <WorkoutDay
                 key={workout.id}
                 workout={workout}
-                id={workout.id}
-                title={workout.title}
-                color={workout.color}
-                date={date}
-                onClick={() => router.push(`/workout/${workout.id}`)}
+                onClick={() => router.push(`/workout/day/${workout.id}`)}
               />
             );
           })

@@ -1,12 +1,12 @@
 import React from "react";
 import { Set } from "@/components/shared/components";
+import { TrisetType } from "@/app/types/types";
 
-export function TriSet({ triSet }: { triSet: { 
-  set1: { weight: number; reps: number };
-  set2: { weight: number; reps: number };
-  set3: { weight: number; reps: number };
-  subSets?: { weight: number; reps: number; order: number }[];
-} }) {
+interface TriSetProps {
+	triSet: TrisetType;
+}
+
+export function TriSet({ triSet }: TriSetProps) {
   return (
     <div className="space-y-4">
       {/* Отображаем сабсеты для каждого сета в трисете */}

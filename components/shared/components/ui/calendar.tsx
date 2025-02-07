@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Calendar from "react-calendar";
-import { DayWithColor } from "@/app/types/workouts"; // Импорт типизации
+import { DayWithColor } from "@/app/types/types"; // Импорт типизации
 
 interface Props {
   events: DayWithColor[]; // Список событий

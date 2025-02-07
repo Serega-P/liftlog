@@ -28,23 +28,13 @@ async function up() {
     },
   });
 
-  const user2 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       fullName: 'Admin Admin',
       email: 'admin@test.ru',
       password: hashSync('111111', 10),
       verified: new Date(),
       role: 'ADMIN',
-    },
-  });
-
-  const user3 = await prisma.user.create({
-    data: {
-      fullName: 'Serhii P',
-      email: 'serhii@test.ru',
-      password: hashSync('11111121', 10),
-      verified: new Date(),
-      role: 'USER',
     },
   });
 
@@ -79,6 +69,12 @@ async function up() {
       workoutId: workout2.id,
     },
   });
+  const day3 = await prisma.workoutDay.create({
+    data: {
+      date: new Date('2025-02-07'),
+      workoutId: workout1.id,
+    },
+  });
 
   console.log("Создание упражнений...");
   const exercise1 = await prisma.exercise.create({
@@ -96,6 +92,22 @@ async function up() {
       name: 'Приседания со штангой',
     },
   });
+  const exercise5 = await prisma.exercise.create({
+    data: {
+			workoutId: workout1.id,
+			dayExercises: day3.id,
+      name: 'Жим штанги лежа',
+    },
+  });
+
+  const exercise6 = await prisma.exercise.create({
+    data: {
+			workoutId: workout1.id,
+			dayExercises: day3.id,
+      name: 'Приседания со штангой',
+    },
+  });
+
   const exercise3 = await prisma.exercise.create({
     data: {
 			workoutId: workout2.id,
@@ -137,6 +149,16 @@ async function up() {
 			exerciseId: exercise4.id,
 		}
   });
+  const setGroup5 = await prisma.sets.create({
+		data: {
+			exerciseId: exercise5.id,
+		}
+  });
+  const setGroup6 = await prisma.sets.create({
+		data: {
+			exerciseId: exercise6.id,
+		}
+  });
 
 
   console.log("Создание сетов...");
@@ -155,6 +177,13 @@ async function up() {
       { setGroupId: setGroup4.id, type: "set", weight: 30, reps: 10 },
       { setGroupId: setGroup4.id, type: "set", weight: 35, reps: 12 },
       { setGroupId: setGroup4.id, type: "set", weight: 30, reps: 10 },
+
+      { setGroupId: setGroup5.id, type: "set", weight: 40, reps: 10 },
+      { setGroupId: setGroup5.id, type: "set", weight: 35, reps: 12 },
+      { setGroupId: setGroup5.id, type: "set", weight: 30, reps: 10 },
+			
+      { setGroupId: setGroup6.id, type: "set", weight: 65, reps: 12 },
+      { setGroupId: setGroup6.id, type: "set", weight: 50, reps: 10 },
     ],
   });
 

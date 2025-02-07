@@ -1,62 +1,57 @@
 "use client";
 
 import React, { useState } from "react";
-import { TriSet } from "@/app/types/workouts";
+import { TrisetType } from "@/app/types/types";
 import { Title, Button, Input } from "@/components/shared/components";
 import { RefreshCcw, Check } from "lucide-react";
 
 interface TriSetItemProps {
-  data: TriSet;
-  onUpdate: (updatedTriSet: TriSet) => void;
+  data: TrisetType;
+  onUpdate: (updatedTriSet: TrisetType) => void;
 }
 
 export const TriSetItem: React.FC<TriSetItemProps> = ({ data, onUpdate }) => {
-  const [sets, setSets] = useState([
-    { ...data.set1, weight: "", reps: "", isAutoFilled: false },
-    { ...data.set2, weight: "", reps: "", isAutoFilled: false },
-    { ...data.set3, weight: "", reps: "", isAutoFilled: false },
-  ]);
+  // Инициализация `sets` из `data.subSets`
+  const [sets, setSets] = useState(
+    data.subSets.map((set) => ({
+      ...set,
+      isAutoFilled: false,
+    }))
+  );
 
   const handleInputChange = (index: number, field: "weight" | "reps", value: string) => {
-    const updatedSets = sets.map((set, idx) => {
-      if (idx === index) {
-        return {
-          ...set,
-          [field]: value === "" ? "" : Number(value), // Обновляем только изменённое поле
-          isAutoFilled: set.weight !== "" && set.reps !== "", // Проверяем, заполнены ли оба поля
-        };
-      }
-      return set; // Не изменяем соседние поля
-    });
+    const updatedSets = sets.map((set, idx) =>
+      idx === index
+        ? { ...set, [field]: value === "" ? "" : Number(value), isAutoFilled: set.weight !== "" && set.reps !== "" }
+        : set
+    );
 
     setSets(updatedSets);
 
-    // Обновляем данные в родительском компоненте
+    // Обновляем родительский компонент
     onUpdate({
       ...data,
-      [`set${index + 1}`]: updatedSets[index],
+      subSets: updatedSets,
     });
   };
 
   const handleRefreshClick = (index: number) => {
-    const updatedSets = sets.map((set, idx) => {
-      if (idx === index) {
-        return {
-          ...set,
-          weight: data[`set${index + 1}`].weight || "",
-          reps: data[`set${index + 1}`].reps || "",
-          isAutoFilled: true,
-        };
-      }
-      return set;
-    });
+    const updatedSets = sets.map((set, idx) =>
+      idx === index
+        ? {
+            ...set,
+            weight: data.subSets[index].weight || "",
+            reps: data.subSets[index].reps || "",
+            isAutoFilled: true,
+          }
+        : set
+    );
 
     setSets(updatedSets);
 
-    // Передаём обновлённые данные в родительский компонент
     onUpdate({
       ...data,
-      [`set${index + 1}`]: updatedSets[index],
+      subSets: updatedSets,
     });
   };
 
@@ -74,8 +69,8 @@ export const TriSetItem: React.FC<TriSetItemProps> = ({ data, onUpdate }) => {
           <div className="flex items-center space-x-2 w-[40%]">
             <Input
               type="number"
-              placeholder={data[`set${index + 1}`].weight === "" ? "" : String(data[`set${index + 1}`].weight)} // Плейсхолдер из data
-              value={set.weight === "" ? "" : String(set.weight)} // Пустое значение до ввода
+              placeholder={data.subSets[index].weight ? String(data.subSets[index].weight) : ""}
+              value={set.weight === "" ? "" : String(set.weight)}
               onChange={(e) => handleInputChange(index, "weight", e.target.value)}
               className="w-full max-w-[100px] bg-bgSurface border-transparent h-12 px-0 py-0 text-center text-3xl placeholder:text-muted text-primary font-medium"
             />
@@ -86,8 +81,8 @@ export const TriSetItem: React.FC<TriSetItemProps> = ({ data, onUpdate }) => {
           <div className="flex items-center space-x-2 w-[40%]">
             <Input
               type="number"
-              placeholder={data[`set${index + 1}`].reps === "" ? "" : String(data[`set${index + 1}`].reps)} // Плейсхолдер из data
-              value={set.reps === "" ? "" : String(set.reps)} // Пустое значение до ввода
+              placeholder={data.subSets[index].reps ? String(data.subSets[index].reps) : ""}
+              value={set.reps === "" ? "" : String(set.reps)}
               onChange={(e) => handleInputChange(index, "reps", e.target.value)}
               className="w-full max-w-[100px] bg-bgSurface border-transparent h-12 px-0 py-0 text-center text-3xl placeholder:text-muted text-primary font-medium"
             />

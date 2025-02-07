@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ExerciseSet } from "@/app/types/workouts";
+import { ExerciseSet } from "@/app/types/types";
 import { Title, Button, Input } from "@/components/shared/components";
 import { RefreshCcw, Check } from "lucide-react";
 

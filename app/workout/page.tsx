@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { WorkoutType, } from "@/app/types/types"
+
 
 export default function WorkoutsPage() {
-  const [workouts, setWorkouts] = useState([]);
+  const [workouts, setWorkouts] = useState<WorkoutType[]>([]);
   const router = useRouter();
 
 
@@ -18,12 +20,12 @@ export default function WorkoutsPage() {
   }, []);
 
   const handleClick = (id: number) => {
-    router.push(`/workout/${id}`);
+    router.push(`/workouts/${id}`);
   };
 
   return (
     <div>
-      <h1>All Workouts</h1>
+      <h1>All Workouts !</h1>
       <ul>
         {workouts.map((workout) => (
           <li key={workout.id} onClick={() => handleClick(workout.id)}>
