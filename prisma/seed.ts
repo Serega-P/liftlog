@@ -80,7 +80,7 @@ async function up() {
   const exercise1 = await prisma.exercise.create({
     data: {
 			workoutId: workout1.id,
-			dayExercises: day1.id,
+			workoutDayId: day1.id,
       name: 'Жим штанги лежа',
     },
   });
@@ -88,14 +88,14 @@ async function up() {
   const exercise2 = await prisma.exercise.create({
     data: {
 			workoutId: workout1.id,
-			dayExercises: day1.id,
+			workoutDayId: day1.id,
       name: 'Приседания со штангой',
     },
   });
   const exercise5 = await prisma.exercise.create({
     data: {
 			workoutId: workout1.id,
-			dayExercises: day3.id,
+			workoutDayId: day3.id,
       name: 'Жим штанги лежа',
     },
   });
@@ -103,7 +103,7 @@ async function up() {
   const exercise6 = await prisma.exercise.create({
     data: {
 			workoutId: workout1.id,
-			dayExercises: day3.id,
+			workoutDayId: day3.id,
       name: 'Приседания со штангой',
     },
   });
@@ -111,14 +111,14 @@ async function up() {
   const exercise3 = await prisma.exercise.create({
     data: {
 			workoutId: workout2.id,
-			dayExercises: day2.id,
+			workoutDayId: day2.id,
       name: 'Cо штангой',
     },
   });
   const exercise4 = await prisma.exercise.create({
     data: {
 			workoutId: workout2.id,
-			dayExercises: day2.id,
+			workoutDayId: day2.id,
       name: 'Гантель на бицепс',
     },
   });

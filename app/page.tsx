@@ -35,7 +35,6 @@ export default function Home() {
       });
   }, []);
 
-
   const handleAddWorkout = () => {
     router.push("/workout/create");
   };
@@ -113,7 +112,6 @@ export default function Home() {
               <WorkoutDay
                 key={workout.id}
                 workout={workout}
-                onClick={() => router.push(`/workout/day/${workout.id}`)}
               />
             );
           })

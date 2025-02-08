@@ -1,11 +1,11 @@
 import { prisma } from '@/prisma/prisma-client';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, { params }: { params: { id: number } }) {
+export async function GET(req: NextRequest, { params }: { params: { workoutId: number } }) {
   try {
-    const { id } = params;
+    const { workoutId } = params;
     const workout = await prisma.workout.findUnique({
-      where: { id: Number(id)},
+      where: { id: Number(workoutId)},
       include: {
 				days: {
 					orderBy: { date: "desc" }, 
@@ -27,10 +27,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: number }
 						},
 					},
 				},
+				exercises: true, // ✅ Загружаем упражнения напрямую из workout
 			},
     });
-
-		// console.log(workout)
 
     if (!workout) {
       return NextResponse.json({ error: "Workout not found" }, { status: 404 });

@@ -12,3 +12,4 @@ export {ScrollArea} from './scroll-area';
 export {Popover} from './popover';
 export {AlertDialog} from './alert-dialog';
 export {Skeleton} from './skeleton';
+export { MuscleGroupPopover } from '../ui/muscle-group-popover'

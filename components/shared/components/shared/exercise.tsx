@@ -12,7 +12,7 @@ interface Props {
   dayId: number;
 }
 
-export function Exercise({ exercise, workoutId, dayId }: Props) {
+export function Exercise({ exercise, workoutId }: Props) {
   const router = useRouter();
 
   return (

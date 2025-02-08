@@ -22,6 +22,7 @@ export interface WorkoutType {
   userId: number;
   user: UserType;
   days: WorkoutDayType[];
+	exercises: ExerciseType[];
 }
 
 // День тренировки
@@ -48,7 +49,7 @@ export interface ExerciseType {
 export interface SetGroupType {
   id: number;
   exerciseId: number;
-  exercise: ExerciseType;
+  exercise: ExerciseType | null;
   set: SetType[];
   triset: TrisetType[];
 }
@@ -58,9 +59,9 @@ export interface SetType {
   id: number;
   type: string;
   setGroupId: number;
-  exercise: SetGroupType;
-  weight?: number | null;
-  reps?: number | null;
+  exercise: ExerciseType ;
+  weight?: number | string;
+  reps?: number | string;
 }
 
 // Трисет (набор из нескольких под-сетов)
@@ -68,7 +69,7 @@ export interface TrisetType {
   id: number;
   type: string;
   setGroupId: number;
-  exercise: SetGroupType;
+  exercise: ExerciseType;
   subSets: SubSetType[];
 }
 
@@ -77,7 +78,10 @@ export interface SubSetType {
   id: number;
   trisetId: number;
   triset: TrisetType;
-  weight?: number | null;
-  reps?: number | null;
+	isAutoFilled: boolean;
+  weight?: number | string;
+  reps?: number | string;
+	originalWeight?: number | string;
+	originalReps?: number | string;
   order: number;
 }

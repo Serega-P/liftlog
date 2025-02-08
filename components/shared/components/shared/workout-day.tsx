@@ -5,10 +5,9 @@ import { WorkoutType } from "@/app/types/types";
 
 interface Props {
   workout: WorkoutType;
-  onClick: () => void;
 }
 
-export const WorkoutDay: React.FC<Props> = ({ workout, onClick }) => {
+export const WorkoutDay: React.FC<Props> = ({ workout }) => {
   if (!workout) {
     console.error("Workout is undefined.");
     return null;
@@ -25,7 +24,6 @@ export const WorkoutDay: React.FC<Props> = ({ workout, onClick }) => {
   return (
     <Link
 			href={`/workout/${id}/day/${lastDay}`}
-      onClick={onClick}
       className="flex items-center justify-between w-full bg-bgSurface py-5 px-8 rounded-[10px] mb-5"
     >
       <div className="flex flex-col space-y-0 flex-1 max-w-[80%]">

@@ -55,10 +55,10 @@ model Exercise {
   id            Int         @id @default(autoincrement())
   name          String
   workoutId     Int
-  workoutDayId  Int
+  workoutDayId  Int?
 
   workout       Workout     @relation(fields: [workoutId], references: [id])
-	workoutDay    WorkoutDay  @relation(fields: [workoutDayId], references: [id])
+	workoutDay    WorkoutDay?  @relation(fields: [workoutDayId], references: [id])
 	setGroup      Sets[]
 
   createdAt     DateTime @default(now())

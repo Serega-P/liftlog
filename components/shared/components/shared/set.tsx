@@ -1,13 +1,9 @@
 import React from "react";
 import {Skeleton } from "@/components/shared/components";
+import { SetType } from "@/app/types/types";
 
-interface SetType {
-  id?: number;
-  weight?: number | null;
-  reps?: number | null;
-}
 
-export function Set({ set }: { set?: SetType }) {
+export function Set({ set }: { set: SetType }) {
   if (!set) {
 		return <Skeleton className="w-full h-8 mb-4"/>
   }
