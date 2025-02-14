@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { ExerciseSet } from "@/app/types/types";
+import { SetType } from "@/app/types/types";
 import { Title, Button, Input } from "@/components/shared/components";
 import { RefreshCcw, Check } from "lucide-react";
 
-interface SetItemProps {
-  data: ExerciseSet;
-  onUpdate: (updatedSet: ExerciseSet) => void;
+interface Props {
+  data: SetType;
+  onUpdate: (updatedSet: SetType) => void;
 }
 
-export const SetItem: React.FC<SetItemProps> = ({ data, onUpdate }) => {
+export const SetItem: React.FC<Props> = ({ data, onUpdate }) => {
   const [weight, setWeight] = useState<number | "">(""); // По умолчанию импут пустой
   const [reps, setReps] = useState<number | "">(""); // По умолчанию импут пустой
   const [isRefreshed, setIsRefreshed] = useState(false); // Для отслеживания нажатия на кнопку Refresh
@@ -58,7 +58,8 @@ export const SetItem: React.FC<SetItemProps> = ({ data, onUpdate }) => {
             placeholder={data.weight === "" ? "" : String(data.weight)} // Placeholder из props
             value={weight === "" ? "" : String(weight)} // Значение импута
             onChange={(e) => handleInputChange("weight", e.target.value)} // Обработчик изменения
-            className="w-full max-w-[100px] bg-bgSurface border-transparent h-12 px-0 py-0 text-center text-3xl placeholder:text-muted text-primary font-medium"
+            className={`w-full max-w-[100px] bg-bgSurface border-muted h-12 px-0 py-0 text-center text-3xl placeholder:text-muted text-primary font-medium
+							${isAutoFilled ? "border-accentSoft" : "border-muted"}`}
           />
           <span className={`${isAutoFilled ? "text-primary" : "text-muted"} text-lg font-bold`}>kg</span>
         </div>
@@ -70,7 +71,8 @@ export const SetItem: React.FC<SetItemProps> = ({ data, onUpdate }) => {
             placeholder={data.reps === "" ? "" : String(data.reps)} // Placeholder из props
             value={reps === "" ? "" : String(reps)} // Значение импута
             onChange={(e) => handleInputChange("reps", e.target.value)} // Обработчик изменения
-            className="w-full max-w-[100px] bg-bgSurface border-transparent h-12 px-0 py-0 text-center text-3xl placeholder:text-muted text-primary font-medium"
+            className={`w-full max-w-[100px] bg-bgSurface border-muted h-12 px-0 py-0 text-center text-3xl placeholder:text-muted text-primary font-medium
+							${isAutoFilled ? "border-accentSoft" : "border-muted"}`}
           />
           <span className={`${isAutoFilled ? "text-primary" : "text-muted"} text-lg font-bold`}>reps</span>
         </div>

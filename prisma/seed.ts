@@ -2,10 +2,9 @@ import { prisma } from './prisma-client';
 import { hashSync } from 'bcrypt';
 
 async function down() {
-  console.log("Удаление всех данных...");
+  console.log("Deleting all data...");
 
   await prisma.subSet.deleteMany({});
-  await prisma.triset.deleteMany({});
   await prisma.set.deleteMany({});
   await prisma.sets.deleteMany({});
   await prisma.exercise.deleteMany({});
@@ -13,11 +12,11 @@ async function down() {
   await prisma.workout.deleteMany({});
   await prisma.user.deleteMany({});
 
-  console.log("Данные удалены!");
+  console.log("Data deleted!");
 }
 
 async function up() {
-  console.log("Создание пользователей...");
+  console.log("Creating users...");
   const user1 = await prisma.user.create({
     data: {
       fullName: 'User Test',
@@ -28,20 +27,10 @@ async function up() {
     },
   });
 
-  await prisma.user.create({
-    data: {
-      fullName: 'Admin Admin',
-      email: 'admin@test.ru',
-      password: hashSync('111111', 10),
-      verified: new Date(),
-      role: 'ADMIN',
-    },
-  });
-
-  console.log("Создание тренировок...");
+  console.log("Creating workouts...");
   const workout1 = await prisma.workout.create({
     data: {
-      title: 'Силовая тренировка',
+      title: 'Full Body',
       color: '#FF5733',
       userId: user1.id,
     },
@@ -49,13 +38,13 @@ async function up() {
 
   const workout2 = await prisma.workout.create({
     data: {
-      title: 'Кардио тренировка',
+      title: 'Strength Training',
       color: '#33FF57',
       userId: user1.id,
     },
   });
 
-  console.log("Создание дней тренировок...");
+  console.log("Creating workout days...");
   const day1 = await prisma.workoutDay.create({
     data: {
       date: new Date('2025-01-29'),
@@ -69,184 +58,83 @@ async function up() {
       workoutId: workout2.id,
     },
   });
+
   const day3 = await prisma.workoutDay.create({
     data: {
       date: new Date('2025-02-07'),
-      workoutId: workout1.id,
+      workoutId: workout2.id,
     },
   });
 
-  console.log("Создание упражнений...");
+  console.log("Creating exercises...");
   const exercise1 = await prisma.exercise.create({
-    data: {
-			workoutId: workout1.id,
-			workoutDayId: day1.id,
-      name: 'Жим штанги лежа',
-    },
+    data: { workoutId: workout1.id, workoutDayId: day1.id, name: 'Push-ups' },
   });
 
   const exercise2 = await prisma.exercise.create({
-    data: {
-			workoutId: workout1.id,
-			workoutDayId: day1.id,
-      name: 'Приседания со штангой',
-    },
-  });
-  const exercise5 = await prisma.exercise.create({
-    data: {
-			workoutId: workout1.id,
-			workoutDayId: day3.id,
-      name: 'Жим штанги лежа',
-    },
-  });
-
-  const exercise6 = await prisma.exercise.create({
-    data: {
-			workoutId: workout1.id,
-			workoutDayId: day3.id,
-      name: 'Приседания со штангой',
-    },
+    data: { workoutId: workout1.id, workoutDayId: day1.id, name: 'Jump Squats' },
   });
 
   const exercise3 = await prisma.exercise.create({
-    data: {
-			workoutId: workout2.id,
-			workoutDayId: day2.id,
-      name: 'Cо штангой',
-    },
+    data: { workoutId: workout2.id, workoutDayId: day2.id, name: 'Bench Press' },
   });
+
   const exercise4 = await prisma.exercise.create({
-    data: {
-			workoutId: workout2.id,
-			workoutDayId: day2.id,
-      name: 'Гантель на бицепс',
-    },
+    data: { workoutId: workout2.id, workoutDayId: day2.id, name: 'Pull-ups' },
   });
 
-  // Жим штанги лежа
-  const setGroup1 = await prisma.sets.create({
-		data: {
-			exerciseId: exercise1.id,
-		}
+  const exercise5 = await prisma.exercise.create({
+    data: { workoutId: workout2.id, workoutDayId: day3.id, name: 'Bench Press' },
   });
 
-	// Приседания со штангой
-  const setGroup2 = await prisma.sets.create({
-		data: {
-			exerciseId: exercise2.id,
-		}
+  const exercise6 = await prisma.exercise.create({
+    data: { workoutId: workout2.id, workoutDayId: day3.id, name: 'Pull-ups' },
   });
 
-	// Cо штангой
-  const setGroup3 = await prisma.sets.create({
-		data: {
-			exerciseId: exercise3.id,
-		}
-  });
-	// Гантель на бицепс
-  const setGroup4 = await prisma.sets.create({
-		data: {
-			exerciseId: exercise4.id,
-		}
-  });
-  const setGroup5 = await prisma.sets.create({
-		data: {
-			exerciseId: exercise5.id,
-		}
-  });
-  const setGroup6 = await prisma.sets.create({
-		data: {
-			exerciseId: exercise6.id,
-		}
-  });
+  console.log("Creating sets...");
+  const setGroup3 = await prisma.sets.create({ data: { exerciseId: exercise3.id } });
+  const setGroup4 = await prisma.sets.create({ data: { exerciseId: exercise4.id } });
+  const setGroup5 = await prisma.sets.create({ data: { exerciseId: exercise5.id } });
+  const setGroup6 = await prisma.sets.create({ data: { exerciseId: exercise6.id } });
+
+  const setGroups = [setGroup3, setGroup4, setGroup5, setGroup6];
+
+  // 1. Создаём все сеты и трисеты
+  const createdSets = [];
+  for (const setGroup of setGroups) {
+    const setsData = [
+      { setGroupId: setGroup.id, type: 'set', weight: 100, reps: 5, isTriSet: false, order: 1 },
+      { setGroupId: setGroup.id, type: 'set', weight: 110, reps: 5, isTriSet: false, order: 2 },
+      { setGroupId: setGroup.id, type: 'triset', weight: null, reps: null, isTriSet: true, order: 3 }, // TriSet без веса
+      { setGroupId: setGroup.id, type: 'set', weight: 50, reps: 8, isTriSet: false, order: 4 },
+    ];
+  
+    for (const setData of setsData) {
+      const createdSet = await prisma.set.create({
+        data: setData,
+      });
+  
+      createdSets.push(createdSet);
+    }
+  }
+  
+  // 2. Добавляем `SubSet` только к `TriSet`
+  for (const set of createdSets) {
+    if (set.isTriSet) {
+      await prisma.subSet.createMany({
+        data: [
+          { setId: set.id, weight: 40, reps: 12, order: 1 },
+          { setId: set.id, weight: 45, reps: 10, order: 2 },
+          { setId: set.id, weight: 50, reps: 8, order: 3 },
+        ],
+      });
+    }
+  }
 
 
-  console.log("Создание сетов...");
-  await prisma.set.createMany({
-    data: [
-      { setGroupId: setGroup1.id, type: "set", weight: 80, reps: 8 },
-      { setGroupId: setGroup1.id, type: "set", weight: 85, reps: 7 },
-      { setGroupId: setGroup1.id, type: "set", weight: 80, reps: 6 },
-			
-      { setGroupId: setGroup2.id, type: "set", weight: 90, reps: 10 },
-      { setGroupId: setGroup2.id, type: "set", weight: 95, reps: 12 },
-      { setGroupId: setGroup2.id, type: "set", weight: 90, reps: 10 },
-			
-      { setGroupId: setGroup4.id, type: "set", weight: 30, reps: 10 },
-      { setGroupId: setGroup4.id, type: "set", weight: 35, reps: 12 },
-      { setGroupId: setGroup4.id, type: "set", weight: 30, reps: 10 },
-      { setGroupId: setGroup4.id, type: "set", weight: 35, reps: 12 },
-      { setGroupId: setGroup4.id, type: "set", weight: 30, reps: 10 },
 
-      { setGroupId: setGroup5.id, type: "set", weight: 40, reps: 10 },
-      { setGroupId: setGroup5.id, type: "set", weight: 35, reps: 12 },
-      { setGroupId: setGroup5.id, type: "set", weight: 30, reps: 10 },
-			
-      { setGroupId: setGroup6.id, type: "set", weight: 65, reps: 12 },
-      { setGroupId: setGroup6.id, type: "set", weight: 50, reps: 10 },
-    ],
-  });
 
-  console.log("Создание трисетов...");
-  const triset1 = await prisma.triset.create({
-    data: {
-      setGroupId: setGroup1.id,
-      type: "triset",
-    },
-  });
-  const triset2 = await prisma.triset.create({
-    data: {
-      setGroupId: setGroup2.id,
-      type: "triset",
-    },
-  });
-	// Cо штангой
-  const triset3 = await prisma.triset.create({
-    data: {
-      setGroupId: setGroup3.id,
-      type: "triset",
-    },
-  });
-  const triset4 = await prisma.triset.create({
-    data: {
-      setGroupId: setGroup3.id,
-      type: "triset",
-    },
-  });
-  const triset5 = await prisma.triset.create({
-    data: {
-      setGroupId: setGroup3.id,
-      type: "triset",
-    },
-  });
-
-  console.log("Создание под-сетов (SubSet) для трисета...");
-  await prisma.subSet.createMany({
-    data: [
-      { trisetId: triset1.id, weight: 40, reps: 12, order: 1 },
-      { trisetId: triset1.id, weight: 45, reps: 10, order: 2 },
-      { trisetId: triset1.id, weight: 50, reps: 8, order: 3 },
-
-      { trisetId: triset2.id, weight: 140, reps: 12, order: 1 },
-      { trisetId: triset2.id, weight: 145, reps: 10, order: 2 },
-      { trisetId: triset2.id, weight: 150, reps: 8, order: 3 },
-
-      { trisetId: triset3.id, weight: 140, reps: 12, order: 1 },
-      { trisetId: triset3.id, weight: 145, reps: 10, order: 2 },
-      { trisetId: triset3.id, weight: 150, reps: 8, order: 3 },
-
-      { trisetId: triset4.id, weight: 140, reps: 12, order: 1 },
-      { trisetId: triset4.id, weight: 145, reps: 10, order: 2 },
-      { trisetId: triset4.id, weight: 150, reps: 8, order: 3 },
-
-      { trisetId: triset5.id, weight: 140, reps: 12, order: 1 },
-      { trisetId: triset5.id, weight: 145, reps: 10, order: 2 },
-      { trisetId: triset5.id, weight: 150, reps: 8, order: 3 },
-
-    ],
-  });
-
-  console.log("Все данные успешно добавлены!");
+  console.log("All data successfully added!");
 }
 
 async function main() {
@@ -254,7 +142,7 @@ async function main() {
     await down();
     await up();
   } catch (e) {
-    console.error("Ошибка при выполнении seed:", e);
+    console.error("Error during seed execution:", e);
   } finally {
     await prisma.$disconnect();
   }

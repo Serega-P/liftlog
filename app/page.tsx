@@ -40,7 +40,6 @@ export default function Home() {
   };
 
   const handleCalendarClick = (date: string) => {
-		console.log(date)
     // setSelectedDate(date);
   };
 

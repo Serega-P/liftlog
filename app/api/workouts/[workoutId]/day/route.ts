@@ -13,9 +13,29 @@ export async function POST(
     }
 
     const workoutIdNum = Number(params.workoutId);
-    const dayDate = new Date(`${date}T00:00:00.000Z`); // Явное сохранение даты без сдвигов
+    const dayDate = new Date(`${date}T00:00:00.000Z`);
 
-    // Отфильтровываем и форматируем сеты
+    // Проверяем, существует ли уже WorkoutDay с этой датой
+    let workoutDay = await prisma.workoutDay.findFirst({
+      where: {
+        workoutId: workoutIdNum,
+        date: dayDate,
+      },
+      include: {
+        exercises: {
+          include: {
+            setGroup: {
+              include: {
+                set: true,
+                triset: { include: { subSets: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Формируем данные сетов и трисетов
     const setData = sequence
       .filter((item: SetType) => !('subSets' in item))
       .map((item: SetType) => ({
@@ -24,7 +44,6 @@ export async function POST(
         reps: item.reps ? Number(item.reps) : null,
       }));
 
-    // Отфильтровываем и форматируем трисеты
     const trisetData = sequence
       .filter((item: TrisetType) => 'subSets' in item)
       .map((item: TrisetType) => ({
@@ -38,15 +57,35 @@ export async function POST(
         },
       }));
 
-    // Создаём структуру для setGroup
+    // Подготавливаем объект setGroup
     const setGroupCreateData: Record<string, any> = {};
     if (setData.length > 0) setGroupCreateData.set = { create: setData };
     if (trisetData.length > 0) setGroupCreateData.triset = { create: trisetData };
 
-			console.log(params)
+    // Если день уже существует → добавляем в него новое упражнение
+    if (workoutDay) {
+      const newExercise = await prisma.exercise.create({
+        data: {
+          name: exercise.name,
+          workout: { connect: { id: workoutIdNum } },
+          workoutDay: { connect: { id: workoutDay.id } },
+          setGroup: Object.keys(setGroupCreateData).length > 0 ? { create: setGroupCreateData } : undefined,
+        },
+        include: {
+          setGroup: {
+            include: {
+              set: true,
+              triset: { include: { subSets: true } },
+            },
+          },
+        },
+      });
 
-    // Создание нового дня тренировки
-    const newWorkoutDay = await prisma.workoutDay.create({
+      return NextResponse.json({ ...workoutDay, exercises: [...workoutDay.exercises, newExercise] }, { status: 200 });
+    }
+
+    // Если дня ещё нет → создаём новый WorkoutDay и добавляем упражнение
+    workoutDay = await prisma.workoutDay.create({
       data: {
         date: dayDate,
         workout: { connect: { id: workoutIdNum } },
@@ -72,9 +111,9 @@ export async function POST(
       },
     });
 
-    return NextResponse.json(newWorkoutDay, { status: 201 });
+    return NextResponse.json(workoutDay, { status: 201 });
   } catch (error) {
-    console.error("Error creating workout day:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error('Error creating workout day:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

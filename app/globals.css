@@ -71,4 +71,8 @@
 		font-family: var(--font-rubik), sans-serif;
 
   }
+
+	.custom-dialog [data-state="open"] button[data-dialog-close] {
+    display: none !important;
+	}
 }

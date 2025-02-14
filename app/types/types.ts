@@ -16,7 +16,7 @@ export interface UserType {
 
 // Тренировка
 export interface WorkoutType {
-  id: number;
+  id?: number;
   title: string;
   color: string;
   userId: number;
@@ -27,7 +27,7 @@ export interface WorkoutType {
 
 // День тренировки
 export interface WorkoutDayType {
-  id: number;
+  id?: number;
   date: string;
   workoutId: number;
   workout: WorkoutType;
@@ -36,7 +36,7 @@ export interface WorkoutDayType {
 
 // Упражнение
 export interface ExerciseType {
-  id: number;
+  id?: number;
   name: string;
   workoutId: number;
   dayExercises: number;
@@ -47,37 +47,28 @@ export interface ExerciseType {
 
 // Группа сетов (может включать обычные сеты или трисеты)
 export interface SetGroupType {
-  id: number;
+  id?: number;
   exerciseId: number;
   exercise: ExerciseType | null;
-  set: SetType[];
-  triset: TrisetType[];
+  sets: SetType[];
 }
 
 // Обычный сет
 export interface SetType {
-  id: number;
+  id?: number;
   type: string;
-  setGroupId: number;
-  exercise: ExerciseType ;
+	order: number;
+  setGroupId?: number;
+	isTriSet: boolean;
+	subSets: SubSetType[];
   weight?: number | string;
   reps?: number | string;
 }
 
-// Трисет (набор из нескольких под-сетов)
-export interface TrisetType {
-  id: number;
-  type: string;
-  setGroupId: number;
-  exercise: ExerciseType;
-  subSets: SubSetType[];
-}
-
-// Под-сет для трисетов
 export interface SubSetType {
-  id: number;
-  trisetId: number;
-  triset: TrisetType;
+  id?: number;
+  setId: number;
+  set: SetType;
 	isAutoFilled: boolean;
   weight?: number | string;
   reps?: number | string;
@@ -85,3 +76,4 @@ export interface SubSetType {
 	originalReps?: number | string;
   order: number;
 }
+

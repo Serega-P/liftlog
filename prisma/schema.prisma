@@ -50,7 +50,6 @@ model WorkoutDay {
   @@map("workout_days")
 }
 
-
 model Exercise {
   id            Int         @id @default(autoincrement())
   name          String
@@ -58,8 +57,8 @@ model Exercise {
   workoutDayId  Int?
 
   workout       Workout     @relation(fields: [workoutId], references: [id])
-	workoutDay    WorkoutDay?  @relation(fields: [workoutDayId], references: [id])
-	setGroup      Sets[]
+  workoutDay    WorkoutDay? @relation(fields: [workoutDayId], references: [id])
+  setGroup      Sets[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -68,60 +67,52 @@ model Exercise {
 }
 
 model Sets {
-	id          Int        @id @default(autoincrement())
-	exerciseId  Int
+  id         Int       @id @default(autoincrement())
+  exerciseId Int
+  exercise   Exercise  @relation(fields: [exerciseId], references: [id])
 
-	exercise    Exercise   @relation(fields: [exerciseId], references: [id])
-	set         Set[]
-	triset      Triset[]
+  sets       Set[]  // Группа сетов
 
-	@@map("set_group")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("set_group")
 }
 
 model Set {
-  id           Int        @id @default(autoincrement())
-	type         String
-  setGroupId   Int
+  id         Int    @id @default(autoincrement())
+  type       String
+  order      Int    // Очерёдность в пределах set_group
+  weight     Float?
+  reps       Int?
+  isTriSet   Boolean @default(false) // Флаг, является ли это TriSet
 
-  exercise     Sets   @relation(fields: [setGroupId], references: [id])
+  subSets    SubSet[] @relation(name: "TrisetSubsets")
 
-  weight       Float?
-  reps         Int?
+  setGroupId Int
+  setGroup   Sets @relation(fields: [setGroupId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("sets")
 }
 
-model Triset {
-  id           Int        @id @default(autoincrement())
-	type         String
-  setGroupId   Int
-
-  exercise     Sets   @relation(fields: [setGroupId], references: [id])
-  subSets      SubSet[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("trisets")
-}
-
 model SubSet {
-  id       Int    @id @default(autoincrement())
-  trisetId Int
-  triset   Triset @relation(fields: [trisetId], references: [id])
+  id     Int    @id @default(autoincrement())
+  setId  Int
+  set    Set @relation(fields: [setId], references: [id], name: "TrisetSubsets") // Связь с TriSet
 
-  weight   Float?
-  reps     Int?
-  order    Int
+  weight Float?
+  reps   Int?
+  order  Int    // Очерёдность в пределах Triset
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("sub_sets")
 }
+
 
 enum UserRole {
   USER

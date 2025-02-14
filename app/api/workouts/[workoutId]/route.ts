@@ -5,30 +5,32 @@ export async function GET(req: NextRequest, { params }: { params: { workoutId: n
   try {
     const { workoutId } = params;
     const workout = await prisma.workout.findUnique({
-      where: { id: Number(workoutId)},
+      where: { id: Number(workoutId) },
       include: {
-				days: {
-					orderBy: { date: "desc" }, 
-					take: 1, 
-					include: {
-						exercises: {
-							include: {
-								setGroup: {
-									include: {
-										set: true,   // Обычные сеты
-										triset: {
-											include: {
-												subSets: true,  // Подсеты внутри трисетов
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-				exercises: true, // ✅ Загружаем упражнения напрямую из workout
-			},
+        days: {
+          orderBy: { date: "desc" },
+          take: 1,
+          include: {
+            exercises: {
+              include: {
+                setGroup: {
+                  include: {
+                    sets: {
+                      orderBy: { order: "asc" }, // ✅ Упорядочиваем сеты
+                      include: {
+                        subSets: {
+                          orderBy: { order: "asc" }, // ✅ Упорядочиваем сабсеты
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        exercises: true, // ✅ Загружаем упражнения напрямую из workout
+      },
     });
 
     if (!workout) {
@@ -38,6 +40,6 @@ export async function GET(req: NextRequest, { params }: { params: { workoutId: n
     return NextResponse.json(workout);
   } catch (error) {
     console.error("Ошибка при получении тренировки:", error);
-    return NextResponse.json({ error: "Ошибка сервера"}, { status: 500 });
+    return NextResponse.json({ error: "Ошибка сервера" }, { status: 500 });
   }
 }

@@ -4,27 +4,19 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   try {
 		const workouts = await prisma.workout.findMany({
-			include: {
+			select: {
+				id: true,
+				color: true,
+				title: true,
 				days: {
-					include: {
-						exercises: {
-							include: {
-								setGroup: {
-									include: {
-										set: true,
-										triset: {
-											include: {
-												subSets: true,
-											}
-										}
-									}
-								}
-							}
-						}
+					select: {
+						id: true,
+						date: true
 					}
 				}
 			}
 		});
+		
 
     return NextResponse.json(workouts);
   } catch (error) {

@@ -12,7 +12,7 @@ export default function WorkoutDay({ params }: { params: { workoutId: number; da
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-
+// console.log(exercises)
   useEffect(() => {
     async function fetchWorkout() {
       try {
