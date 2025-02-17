@@ -11,8 +11,8 @@ interface Props {
 }
 
 export const SetItem: React.FC<Props> = ({ data, onUpdate }) => {
-  const [weight, setWeight] = useState<number | "">(""); // По умолчанию импут пустой
-  const [reps, setReps] = useState<number | "">(""); // По умолчанию импут пустой
+  const [weight, setWeight] = useState<number | string>(""); // По умолчанию импут пустой
+  const [reps, setReps] = useState<number | string>(""); // По умолчанию импут пустой
   const [isRefreshed, setIsRefreshed] = useState(false); // Для отслеживания нажатия на кнопку Refresh
 
   // Проверка: оба поля заполнены (для отображения Check)

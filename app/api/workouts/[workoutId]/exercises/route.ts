@@ -20,12 +20,7 @@ export async function GET(req: Request, { params }: { params: { id: string, exer
                           include: { 
 													setGroup: {
 														include: {
-															set: true,
-															triset: {
-																include: {
-																	subSets: true,
-																}
-															}
+															sets: true,
 														}
 													} 
 												} 

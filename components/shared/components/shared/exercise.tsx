@@ -18,34 +18,35 @@ import {
 
 interface Props {
   exercise: ExerciseType;
-  workoutId: number;
+  onUpdate: (updatedExercise: ExerciseType) => void; // ✅ Передаём коллбэк
 }
 
-export function Exercise({ exercise, workoutId }: Props) {
+export function Exercise({ exercise, onUpdate }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [exerciseData, setExerciseData] = useState(exercise);
+	const [done, setDone] =  useState(true)
   const [sets, setSets] = useState<SetType[]>(() => 
-  exercise.setGroup?.flatMap((group) => group.sets)?.sort((a, b) => a.order - b.order) || []
+    exercise.setGroup?.flatMap((group) => group.sets)?.sort((a, b) => a.order - b.order) || []
   );
-
+	// console.log("exerciseData:", exerciseData)
   const handleUpdateExercise = (updatedSets: SetType[]) => {
-		setExerciseData((prev) => ({
-			...prev,
-			setGroup: prev.setGroup.map((group) => ({
-				...group,
-				sets: updatedSets, // ✅ Обновляем сеты в правильной группе
-			})),
-		}));
-	
-		setSets(updatedSets); // ✅ Обновляем локальный стейт `sets`
-		setIsOpen(false);
-	};
-	
+    const updatedExercise = {
+      ...exerciseData,
+      setGroup: exerciseData.setGroup.map((group) => ({
+        ...group,
+        sets: updatedSets,
+      })),
+    };
 
-		// console.log("sets:", sets);
+    setExerciseData(updatedExercise); // ✅ Обновляем локальный стейт
+    setSets(updatedSets); // ✅ Обновляем `sets`
+    onUpdate(updatedExercise); // ✅ Отправляем изменения вверх
+    setIsOpen(false);
+    setDone(false);
+  };
 
   return (
-    <div className="bg-bgBase rounded-[20px] text-primary mb-5">
+    <div className={`${done ? "border-none" : "border-accentSoft"} bg-bgBase rounded-[20px] text-primary mb-5 border-2`}>
       {/* Верхняя часть */}
       <div className="flex justify-between items-center border-b border-customBorder p-5">
         <div className="flex items-center gap-2">

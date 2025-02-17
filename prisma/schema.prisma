@@ -39,7 +39,7 @@ model Workout {
 
 model WorkoutDay {
   id          Int       @id @default(autoincrement())
-  date        DateTime
+  date        DateTime?
   workoutId   Int
   workout     Workout   @relation(fields: [workoutId], references: [id])
   exercises   Exercise[]

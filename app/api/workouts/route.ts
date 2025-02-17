@@ -1,7 +1,7 @@
 import { prisma } from '@/prisma/prisma-client';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
 		const workouts = await prisma.workout.findMany({
 			select: {
@@ -25,34 +25,53 @@ export async function GET(req: NextRequest) {
   }
 }
 
+
 export async function POST(req: NextRequest) {
   try {
     const { title, color, exercises } = await req.json();
 
-    if (!title || !color || exercises.length === 0) {
+    if (!title || !color || !Array.isArray(exercises)) {
       return NextResponse.json({ error: "Invalid data" }, { status: 400 });
     }
 
+    // 1️⃣ Создаём воркаут
     const newWorkout = await prisma.workout.create({
+      data: {
+        title,
+        color,
+        userId: 4,
+      },
+    });
+
+    const newWorkoutDay = await prisma.workoutDay.create({
 			data: {
-				title,
-				color,
-				userId: 1,
+				date: null, // ✅ Текущая дата
+				workoutId: newWorkout.id, // ✅ Связываем день с воркаутом
 				exercises: {
 					create: exercises.map((exercise: { name: string }) => ({
 						name: exercise.name,
-						workoutDay: undefined,
+						workoutId: newWorkout.id, // ✅ Указываем ID воркаута
+						setGroup: {
+							create: {},
+						},
 					})),
 				},
 			},
-			include: { exercises: true },
+			include: {
+				exercises: true,
+			},
 		});
 
-    return NextResponse.json(newWorkout, { status: 201 });
+    return NextResponse.json(
+      { ...newWorkout, days: [newWorkoutDay] },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Ошибка при создании тренировки:", error);
     return NextResponse.json({ error: "Ошибка сервера" }, { status: 500 });
   }
 }
+
+
 
 

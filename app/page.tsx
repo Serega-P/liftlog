@@ -40,7 +40,9 @@ export default function Home() {
   };
 
   const handleCalendarClick = (date: string) => {
+		console.log(date)
     // setSelectedDate(date);
+		
   };
 
   // const handleCloseDialog = () => {
@@ -79,7 +81,7 @@ export default function Home() {
 
   const events = workouts.flatMap((workout) =>
     workout.days.map((day) => ({
-      date: day.date.split("T")[0],
+      date: day.date?.split("T")[0],
       color: workout.color,
     }))
   );

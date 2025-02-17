@@ -14,8 +14,8 @@ export const TriSetItem: React.FC<Props> = ({ data, onUpdate }) => {
   // Локальное состояние для каждого сета
   const [sets, setSets] = useState(
     data.subSets.map((set) => ({
-      weight: "",
-      reps: "",
+      weight: "", // Начальное значение пустое (input изначально пуст)
+      reps: "", // Начальное значение пустое
       isRefreshed: false,
       originalWeight: set.weight ?? 0,
       originalReps: set.reps ?? 0,
@@ -28,8 +28,8 @@ export const TriSetItem: React.FC<Props> = ({ data, onUpdate }) => {
       idx === index
         ? {
             ...set,
-            [field]: value === "" ? "" : Number(value),
-            isRefreshed: false, // Если ввод вручную — сбрасываем refresh
+            [field]: value, // Сохраняем строку
+            isRefreshed: set.weight !== "" && set.reps !== "", // Если оба поля заполнены — обновляем
           }
         : set
     );
@@ -53,9 +53,9 @@ export const TriSetItem: React.FC<Props> = ({ data, onUpdate }) => {
       idx === index
         ? {
             ...set,
-            weight: set.originalWeight,
-            reps: set.originalReps,
-            isRefreshed: true,
+            weight: String(set.originalWeight), // Приводим к строке
+            reps: String(set.originalReps), // Приводим к строке
+            isRefreshed: true, // Теперь это авто-заполнение
           }
         : set
     );
@@ -89,7 +89,7 @@ export const TriSetItem: React.FC<Props> = ({ data, onUpdate }) => {
               <Input
                 type="number"
                 placeholder={String(set.originalWeight)}
-                value={set.weight === "" ? "" : String(set.weight)}
+                value={set.weight}
                 onChange={(e) => updateSet(index, "weight", e.target.value)}
                 className={`w-full max-w-[100px] bg-bgSurface border-muted h-12 px-0 py-0 text-center text-3xl placeholder:text-muted text-primary font-medium
 									${isAutoFilled ? "border-accentSoft" : "border-muted"}`}
@@ -102,7 +102,7 @@ export const TriSetItem: React.FC<Props> = ({ data, onUpdate }) => {
               <Input
                 type="number"
                 placeholder={String(set.originalReps)}
-                value={set.reps === "" ? "" : String(set.reps)}
+                value={set.reps}
                 onChange={(e) => updateSet(index, "reps", e.target.value)}
                 className={`w-full max-w-[100px] bg-bgSurface border-muted h-12 px-0 py-0 text-center text-3xl placeholder:text-muted text-primary font-medium
 									${isAutoFilled ? "border-accentSoft" : "border-muted"}`}
@@ -112,7 +112,13 @@ export const TriSetItem: React.FC<Props> = ({ data, onUpdate }) => {
 
             {/* Кнопка обновления */}
             <div className="flex items-center justify-center w-[20%]">
-              <Button variant="icons" size="icons" onClick={() => refreshSet(index)} className="bg-none">
+              <Button
+                variant="icons"
+                size="icons"
+                onClick={() => refreshSet(index)}
+                className="bg-none"
+                disabled={isAutoFilled} // Отключаем кнопку, если уже обновлено
+              >
                 {isAutoFilled ? <Check size={28} strokeWidth={3} className="text-accentSoft" /> : <RefreshCcw size={28} strokeWidth={2} />}
               </Button>
             </div>

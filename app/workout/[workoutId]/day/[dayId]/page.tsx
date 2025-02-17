@@ -2,17 +2,17 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Skeleton, Container, Title, Exercise } from "@/components/shared/components";
+import { Skeleton, Container, Title, Exercise, Button} from "@/components/shared/components";
 import { MoreVertical, Calendar } from "lucide-react";
 import { WorkoutType, ExerciseType } from "@/app/types/types";
 
-export default function WorkoutDay({ params }: { params: { workoutId: number; dayId: number } }) {
-  const { workoutId, dayId } = params;
+export default function WorkoutDay({ params }: { params: { workoutId: number; } }) {
+  const { workoutId } = params;
   const [workout, setWorkout] = useState<WorkoutType | null>(null);
   const [exercises, setExercises] = useState<ExerciseType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-// console.log(exercises)
+
   useEffect(() => {
     async function fetchWorkout() {
       try {
@@ -22,11 +22,9 @@ export default function WorkoutDay({ params }: { params: { workoutId: number; da
         const data: WorkoutType = await res.json();
         setWorkout(data);
 
-        // ✅ Если есть `days`, берем упражнения из последнего дня
         if (data.days?.length) {
           setExercises(data.days[data.days.length - 1].exercises);
         } else if (data.exercises?.length) {
-          // ✅ Если `days` нет, берем упражнения из `workout`
           setExercises(data.exercises);
         }
       } catch (error) {
@@ -38,6 +36,36 @@ export default function WorkoutDay({ params }: { params: { workoutId: number; da
 
     fetchWorkout();
   }, [workoutId]);
+
+	const saveWorkout = async () => {
+		try {
+			const res = await fetch(`/api/workouts/${workoutId}`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ workoutId, exercises }),
+			});
+	
+			if (!res.ok) throw new Error("Failed to save workout");
+	
+			const updatedWorkoutDay = await res.json();
+			setWorkout((prev) =>
+				prev ? { ...prev, days: [...prev.days, updatedWorkoutDay] } : prev
+			);
+			alert("Workout saved successfully!");
+		} catch (error) {
+			console.error("❌ Ошибка при сохранении тренировки:", error);
+			console.error("Ошибка сохранения:", error);
+			alert("Failed to save workout.");
+		}
+	};
+
+  // ✅ Функция для обновления упражнения
+  const updateExercise = (updatedExercise: ExerciseType) => {
+	// console.log("updatedExercise NEW!:", updatedExercise)
+    setExercises((prev) =>
+      prev.map((exercise) => (exercise.id === updatedExercise.id ? updatedExercise : exercise))
+    );
+  };
 
   if (isLoading) {
     return <Skeleton className="w-full h-20" />;
@@ -54,7 +82,7 @@ export default function WorkoutDay({ params }: { params: { workoutId: number; da
           className="text-accentSoft text-base font-bold hover:underline"
           onClick={() => router.back()}
         >
-          Done
+          Cancel
         </button>
         <button className="flex items-center justify-center bg-bgSurface h-[34px] w-[34px] rounded-full">
           <MoreVertical size={20} className="text-accentSoft" />
@@ -86,12 +114,21 @@ export default function WorkoutDay({ params }: { params: { workoutId: number; da
       <div>
         {exercises.length > 0 ? (
           exercises.map((exercise) => (
-            <Exercise key={exercise.id} exercise={exercise} workoutId={workout.id} dayId={dayId} />
+            <Exercise key={exercise.id} exercise={exercise} onUpdate={updateExercise} />
           ))
         ) : (
           <p className="text-gray-500">No exercises available.</p>
         )}
       </div>
+
+			<Button
+        className="mt-6 w-full font-bold uppercase text-base" 
+				variant="accent"
+				size="accent"
+        onClick={saveWorkout}
+      >
+        Save Workout
+      </Button>
     </Container>
-  );
+        );
 }
